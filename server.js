@@ -13,9 +13,9 @@ app.get('/',function(req,res){
     res.send('This is a student portal')
 })
 
-app.get('/login',function(req,res){
-    res.send('This is a Login page')
-})
+// app.get('/login',function(req,res){
+//     res.send('This is a Login page')
+// })
 
 // app.post('/signup',function(req,res){
 //     es.send('Singup successful')
