@@ -13,14 +13,6 @@ app.get('/',function(req,res){
     res.send('This is a student portal')
 })
 
-// app.get('/login',function(req,res){
-//     res.send('This is a Login page')
-// })
-
-// app.post('/signup',function(req,res){
-//     es.send('Singup successful')
-// })
-
 app.post('/signup', async (req, res) => {
     try {
         const data = req.body; // Assuming the request body contains the person data
@@ -79,85 +71,13 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-// app.post('/datasp',(req,res)=>{
-//     console.log('datass')
-// })
 
 
-// Endpoint to get data of all signed-up students (admin functionality)...must pass admin user,pwd in query parameter
-app.get('/login/data', async (req, res) => {
-    try {
-        // Check if the requesting user is an admin
-        const { username, password } = req.query; // Assuming username and password are passed as query parameters
-        const adminUser = await stud.findOne({ username, password, role: 'admin' });
-        if (!adminUser) {
-            return res.status(403).json({ error: 'Forbidden: Only admin users can access this endpoint' });
-        }
+const studentroutes=require("./routes/studentroutes");
+app.use('/login',studentroutes);
 
-        // If user is admin, retrieve data of all students
-        const allStudents = await stud.find({});
-        return res.status(200).json({ students: allStudents });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-
-//End point and passing user,pwd of admin to delete record of student with student ID in url too ....
-app.delete('/login/data/:id', async (req, res) => {
-    try {
-        // Check if the requesting user is an admin
-        const { username, password } = req.query; // Assuming username and password are passed as query parameters
-        const adminUser = await stud.findOne({ username, password, role: 'admin' });
-        if (!adminUser) {
-            return res.status(403).json({ error: 'Forbidden: Only admin users can access this endpoint' });
-        }
-
-        // Get the student ID from the request parameters
-        const studentId = req.params.id;
-
-        // Find and delete the student record
-        const deletedStudent = await stud.findByIdAndDelete(studentId);
-        if (!deletedStudent) {
-            return res.status(404).json({ error: 'Student not found' });
-        }
-
-        return res.status(200).json({ message: 'Student record deleted successfully' });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-app.put('/login/student/:id', async (req, res) => {
-    try {
-        const studentId = req.params.id; // Extract the id from the URL parameter
-        const updatedStudentData = req.body; // Updated data for the student
-
-        const response = await stud.findByIdAndUpdate(studentId, updatedStudentData, {
-            new: true, // Return the updated document
-            runValidators: true, // Run Mongoose validation
-        });
-
-        if (!response) {
-            return res.status(404).json({ error: 'Student not found' });
-        }
-
-        console.log('Data updated');
-        res.status(200).json(response);
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
-
-
-
-
-
-
-
+const adminroutes=require("./routes/adminroutes");
+app.use('/login',adminroutes);
 
 
 
